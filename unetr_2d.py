@@ -143,14 +143,16 @@ def build_unetr_2d(cf):
     x = conv_block(x, 16)
 
     """ Output """
-    outputs = L.Conv2D(cf["num_classes"], kernel_size=1, padding="same", activation="sigmoid")(x)
+    #outputs = L.Conv2D(cf["num_classes"], kernel_size=1, padding="same", activation="sigmoid")(x)
+    outputs = L.Conv2D(cf["num_classes"], kernel_size=1, padding="same", activation="softmax")(x)
+
 
     return Model(inputs, outputs, name="UNETR_2D")
 
 if __name__ == "__main__":
     config = {}
     config["image_size"] = 256
-    config["num_classes"] = 11
+    config["num_classes"] = 7
     config["num_layers"] = 12
     config["hidden_dim"] = 64
     config["mlp_dim"] = 128

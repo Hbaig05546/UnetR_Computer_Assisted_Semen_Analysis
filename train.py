@@ -15,7 +15,7 @@ from unetr_2d import build_unetr_2d
 """ UNETR  Configration """
 cf = {}
 cf["image_size"] = 256
-cf["num_classes"] = 11
+cf["num_classes"] = 7
 cf["num_channels"] = 3
 cf["num_layers"] = 12
 cf["hidden_dim"] = 128
@@ -34,16 +34,16 @@ def create_dir(path):
         os.makedirs(path)
 
 def load_dataset(path):
-    train_x = sorted(glob(os.path.join(path, "train", "images", "*.jpg")))
+    train_x = sorted(glob(os.path.join(path, "train", "images", "*.png")))
     train_y = sorted(glob(os.path.join(path, "train", "labels", "*.png")))
 
-    valid_x = sorted(glob(os.path.join(path, "val", "images", "*.jpg")))
+    valid_x = sorted(glob(os.path.join(path, "val", "images", "*.png")))
     valid_y = sorted(glob(os.path.join(path, "val", "labels", "*.png")))
 
-    test_x = sorted(glob(os.path.join(path, "test", "images", "*.jpg")))
-    test_y = sorted(glob(os.path.join(path, "test", "labels", "*.png")))
+    # test_x = sorted(glob(os.path.join(path, "test", "images", "*.jpg")))
+    # test_y = sorted(glob(os.path.join(path, "test", "labels", "*.png")))
 
-    return (train_x, train_y), (valid_x, valid_y), (test_x, test_y)
+    return (train_x, train_y), (valid_x, valid_y)#, (test_x, test_y)
 
 def read_image(path):
     path = path.decode()
@@ -100,25 +100,32 @@ if __name__ == "__main__":
 
     """ RGB Code and Classes """
     rgb_codes = [
-        [0, 0, 0], [0, 153, 255], [102, 255, 153], [0, 204, 153],
-        [255, 255, 102], [255, 255, 204], [255, 153, 0], [255, 102, 255],
-        [102, 0, 51], [255, 204, 255], [255, 0, 102]
+        (0, 0, 0), (1, 1, 1), (2, 2, 2), (3, 3, 3), (4, 4, 4), (5, 5, 5), (6, 6, 6)
     ]
 
     classes = [
-        "background", "skin", "left eyebrow", "right eyebrow",
-        "left eye", "right eye", "nose", "upper lip", "inner mouth",
-        "lower lip", "hair"
+        "background","head","acrosome","non-acrosome","midpiece","tail","noise"
     ]
 
     """ Dataset """
-    dataset_path = "LaPa"
-    (train_x, train_y), (valid_x, valid_y), (test_x, test_y) = load_dataset(dataset_path)
+    dataset_path = r"D:\JIO Institute\Capstone\Capstone_V2\ID_code_UnetR\Multiclass-Image-Segmentation-using-UNETR-in-TensorFlow\casa_data_new"
+    #(train_x, train_y), (valid_x, valid_y), (test_x, test_y) = load_dataset(dataset_path)
+    (train_x, train_y), (valid_x, valid_y) = load_dataset(dataset_path)
 
     print(f"Train: \t{len(train_x)} - {len(train_y)}")
     print(f"Valid: \t{len(valid_x)} - {len(valid_y)}")
-    print(f"Test: \t{len(test_x)} - {len(test_y)}")
+    #print(f"Test: \t{len(test_x)} - {len(test_y)}")
 
+
+######### the error was in the load_data function where the type of images was set to jpg intead of png in our case....
+    print(f"Shape of train_x: {len(train_x)}")
+    print(f"Shape of train_y: {len(train_y)}")
+    print(f"Shape of valid_x: {len(valid_x)}")
+    print(f"Shape of valid_y: {len(valid_y)}")
+
+################################################################################################################
+###########################################   Model Training Begins  ###########################################
+################################################################################################################
     train_dataset = tf_dataset(train_x, train_y, batch=batch_size)
     valid_dataset = tf_dataset(valid_x, valid_y, batch=batch_size)
 
